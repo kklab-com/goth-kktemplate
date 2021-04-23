@@ -128,12 +128,12 @@ func _FrameExistValidate() bool {
 		for _, frame := range StructTemplateFrames {
 			framePath := getRealTemplatePath(frame, "")
 			if framePath == "" {
-				kklogger.ErrorJ("kktemplate._FrameExistValidate", fmt.Sprintf("frame file %s/%s.tmpl is not exist", TemplateRootPath, frame))
+				kklogger.ErrorJ("kktemplate:_FrameExistValidate", fmt.Sprintf("frame file %s/%s.tmpl is not exist", TemplateRootPath, frame))
 				return false
 			}
 
 			if _, err := ioutil.ReadFile(framePath); os.IsNotExist(err) {
-				kklogger.ErrorJ("kktemplate._FrameExistValidate", fmt.Sprintf("frame file %s/%s.tmpl is not exist", TemplateRootPath, frame))
+				kklogger.ErrorJ("kktemplate:_FrameExistValidate", fmt.Sprintf("frame file %s/%s.tmpl is not exist", TemplateRootPath, frame))
 				return false
 			}
 		}
