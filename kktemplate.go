@@ -46,7 +46,6 @@ func LoadHtml(name string, lang string) (*html.Template, error) {
 				if tmpl, e := html.New(mapName).Funcs(generateHTMLFuncMap(lang)).Parse(string(data)); e == nil {
 					htmlTemplateMap[mapName] = tmpl
 				} else {
-					kklogger.ErrorJ("kktemplate:LoadHtml", e.Error())
 					return nil, e
 				}
 			} else {
@@ -90,7 +89,6 @@ func LoadFrameHtml(name string, lang string) (*html.Template, error) {
 				if tmpl, e := html.New(tmplPath).Funcs(generateHTMLFuncMap(lang)).ParseFiles(filePaths...); e == nil {
 					frameHtmlTemplateMap[mapName] = tmpl
 				} else {
-					kklogger.ErrorJ("kktemplate:LoadFrameHtml", e.Error())
 					return nil, e
 				}
 			} else {
@@ -176,7 +174,6 @@ func LoadText(name string, lang string) (*text.Template, error) {
 				if tmpl, e := text.New(mapName).Funcs(generateTEXTFuncMap(lang)).Parse(string(data)); e == nil {
 					textTemplateMap[mapName] = tmpl
 				} else {
-					kklogger.ErrorJ("kktemplate:LoadText", e.Error())
 					return nil, e
 				}
 			} else {
