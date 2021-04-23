@@ -20,8 +20,9 @@ var htmlLocker, textLocker = sync.Mutex{}, sync.Mutex{}
 var StructTemplateFrames = []string{"_main", "_header_content", "_header_claim", "_footer_content", "_footer_claim"}
 var frameExist = false
 var FuncMap = html.FuncMap{}
+var ErrTemplateNotFound = fmt.Errorf("template file not found")
 
-func LoadHtml(name string, lang string) *html.Template {
+func LoadHtml(name string, lang string) (*html.Template, error) {
 	mapName := name + "-" + lang
 	if _IsDebug() {
 		htmlLocker.Lock()
@@ -46,19 +47,19 @@ func LoadHtml(name string, lang string) *html.Template {
 					htmlTemplateMap[mapName] = tmpl
 				} else {
 					kklogger.ErrorJ("kktemplate:LoadHtml", e.Error())
-					return nil
+					return nil, e
 				}
 			} else {
-				return nil
+				return nil, ErrTemplateNotFound
 			}
 		}
 	}
 
 	tmpl, _ := htmlTemplateMap[mapName]
-	return tmpl
+	return tmpl, nil
 }
 
-func LoadFrameHtml(name string, lang string) *html.Template {
+func LoadFrameHtml(name string, lang string) (*html.Template, error) {
 	mapName := name + "-" + lang
 	if _IsDebug() {
 		htmlLocker.Lock()
@@ -68,7 +69,7 @@ func LoadFrameHtml(name string, lang string) *html.Template {
 
 	if _, f := frameHtmlTemplateMap[mapName]; !f {
 		if !_FrameExistValidate() {
-			return nil
+			return nil, ErrTemplateNotFound
 		}
 
 		defer htmlLocker.Unlock()
@@ -76,7 +77,7 @@ func LoadFrameHtml(name string, lang string) *html.Template {
 		if _, f := frameHtmlTemplateMap[mapName]; !f {
 			tmplPath := getRealTemplatePath(name, lang)
 			if tmplPath == "" {
-				return nil
+				return nil, ErrTemplateNotFound
 			}
 
 			if _, err := ioutil.ReadFile(tmplPath); !os.IsNotExist(err) {
@@ -90,16 +91,16 @@ func LoadFrameHtml(name string, lang string) *html.Template {
 					frameHtmlTemplateMap[mapName] = tmpl
 				} else {
 					kklogger.ErrorJ("kktemplate:LoadFrameHtml", e.Error())
-					return nil
+					return nil, e
 				}
 			} else {
-				return nil
+				return nil, ErrTemplateNotFound
 			}
 		}
 	}
 
 	tmpl, _ := frameHtmlTemplateMap[mapName]
-	return tmpl
+	return tmpl, nil
 }
 
 func getRealTemplatePath(name string, lang string) string {
@@ -150,7 +151,7 @@ func _FrameExistValidate() bool {
 	return true
 }
 
-func LoadText(name string, lang string) *text.Template {
+func LoadText(name string, lang string) (*text.Template, error) {
 	mapName := name + "-" + lang
 	if _IsDebug() {
 		textLocker.Lock()
@@ -176,16 +177,16 @@ func LoadText(name string, lang string) *text.Template {
 					textTemplateMap[mapName] = tmpl
 				} else {
 					kklogger.ErrorJ("kktemplate:LoadText", e.Error())
-					return nil
+					return nil, e
 				}
 			} else {
-				return nil
+				return nil, ErrTemplateNotFound
 			}
 		}
 	}
 
 	tmpl, _ := textTemplateMap[mapName]
-	return tmpl
+	return tmpl, nil
 }
 
 func _IsDebug() bool {
